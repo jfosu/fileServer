@@ -3,6 +3,9 @@ import { Router } from 'express'
 import passport from 'passport';
 import { checkAuthenticated, checkNotAuthenticated, } from '../middleware/authAccess'
 import register from '../controllers/register';
+import forgotPassword from '../controllers/forgot-password';
+import confirmLink from '../controllers/confirmLink';
+import resetPassword from '../controllers/reset-password';
 
 
 //import session from 'express-session';
@@ -83,6 +86,17 @@ routes.get('/logout', (req, res) => {
     req.flash('success_msg', 'You have log yourself out')
     res.redirect('/login')
 })
+
+routes.get('/forgot-password', (req, res, next) => {
+    res.render('forgot-password')
+})  
+
+routes.post('/forgot-password', forgotPassword)    
+
+routes.get('/reset-password/:id/:token', confirmLink)
+
+
+routes.post('/reset-password/:id/:token', resetPassword)
 
 
 
