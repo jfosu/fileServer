@@ -1,6 +1,7 @@
 import express, { Application, Request, Response, NextFunction} from 'express'
 import pool from '../dbConfig/db'
 import jwt from 'jsonwebtoken'
+import transporter from '../utils/sendMail';
 
 
 const PORT = process.env.PORT || 5000;
@@ -11,14 +12,15 @@ const forgotPassword = (req: Request, res: Response, next: NextFunction) => {
 
     // Make sure user exist in database with this email
     pool.query(
-        `SELECT * FROM users WHERE email = $1`, [email], (err, result) => {
+        `SELECT * FROM users WHERE user_email = $1`, [email], (err, result) => {
             if (err) {
                 throw err
             }
 
-            if (result.rows.length === 0) {
+            else if (result.rows.length === 0) {
                 errors.push({ msg: 'User with this email does not exist'})
-                return res.render('forgot-password', { errors })
+                console.log('User with this email does not exist')
+                res.render('forgot-password', { errors })
             } else {
                 // User exist and now create a One time link valid for 15minutes
 
@@ -32,6 +34,24 @@ const forgotPassword = (req: Request, res: Response, next: NextFunction) => {
                 const token = jwt.sign(payload, secret, { expiresIn: '15m'})
                 const link = `http://localhost:${PORT}/reset-password/${user.id}/${token}`
                 console.log(link)
+                const mailOptions = {
+                    from: process.env.ADMIN_MAIL,
+                    to: 'phamosfii@gmail.com',
+                    subject: 'Password reset',
+                    html: `
+                        <h3>click on the link below to reset your password</h3>
+                        <br>
+                        <p>${link}</p>
+                        `
+                }
+                transporter.sendMail(mailOptions, function(error, info){
+                    if (error) {
+                   console.log(error);
+                    } else {
+                      console.log('Email sent: ' + info.response);
+                      // do something useful
+                    }
+                  });
                 res.send('Password reset link has been sent to your email ...')
                 
                 

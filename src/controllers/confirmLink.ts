@@ -7,7 +7,7 @@ const confirmLink = (req: Request, res: Response, next: NextFunction) => {
 
     // Check if this id exist in database
     pool.query(
-        `SELECT * FROM users WHERE id = $1`, [id], (err, result) => {
+        `SELECT * FROM users WHERE user_id = $1`, [id], (err, result) => {
             if (err) {
                 throw err
             }

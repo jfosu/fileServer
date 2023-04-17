@@ -41,7 +41,7 @@ const register = async (req: Request, res: Response) => {
         console.log(hashedPassword)
 
         pool.query(
-            `SELECT * FROM users WHERE email = $1`, [email], (err, result) => {
+            `SELECT * FROM users WHERE user_email = $1`, [email], (err, result) => {
                 if (err) {
                     throw err
                 }
@@ -52,9 +52,9 @@ const register = async (req: Request, res: Response) => {
                     res.render('register', { errors })
                 } else {
                     pool.query(
-                        `INSERT INTO users (name, email, password, role)
+                        `INSERT INTO users (user_name, user_email, user_password, user_role)
                         VALUES ($1, $2, $3, $4)
-                        RETURNING id, password`, [name, email, hashedPassword, role],
+                        RETURNING user_id, user_password`, [name, email, hashedPassword, role],
                         (err, result) => {
                             if (err) {
                                 throw err

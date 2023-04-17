@@ -5,6 +5,7 @@ import expressLayout from 'express-ejs-layouts'
 import flash from 'connect-flash';
 import session from 'express-session';
 import passport from 'passport';
+import path from 'path';
 
 
 
@@ -13,6 +14,9 @@ const app: Application = express()
 // Authorize Login
 import initialize from './middleware/authLogins';
 initialize(passport)
+
+// Public Folder
+app.use(express.static('./public'))
 
 // EJS
 app.use(expressLayout)

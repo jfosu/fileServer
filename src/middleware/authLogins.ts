@@ -4,9 +4,9 @@ import pool from "../dbConfig/db"
 import bcrypt from 'bcrypt'
 
 function initialize(passport: any) {
-    const authenticateUser = (email: string, password: string, done: any) => {
+    const authenticateUser = async(email: string, password: string, done: any) => {
         pool.query(
-            `SELECT * FROM users WHERE email = $1`,
+            `SELECT * FROM users WHERE user_email = $1`,
             [email],
             (err, results) => {
                 if (err) {
@@ -15,9 +15,11 @@ function initialize(passport: any) {
                 console.log(results.rows)
                 if (results.rows.length > 0) {
                     const user = results.rows[0]
+                    console.log(user)
 
-                    bcrypt.compare(password, user.password, (err, isMatch) => {
+                    bcrypt.compare(password, user.user_password, (err, isMatch) => {
                         if (err) {
+                            console.log('pas' + password, 'user.pas' + user.password)
                             throw err
                         }
 
@@ -44,10 +46,10 @@ function initialize(passport: any) {
         )
     )
 
-    passport.serializeUser((user: any, done: any) => done(null, user.id))
+    passport.serializeUser((user: any, done: any) => done(null, user.user_id))
 
     passport.deserializeUser((id: number, done: any) => {
-        pool.query(`SELECT * FROM users WHERE id = $1`, [id], (err, results) => {
+        pool.query(`SELECT * FROM users WHERE user_id = $1`, [id], (err, results) => {
             if (err) {
                 throw err
             }
