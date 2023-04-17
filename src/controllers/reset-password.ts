@@ -40,7 +40,7 @@ const resetPassword = async (req: Request, res: Response) => {
         console.log(hashedPassword)
 
         pool.query(
-            `SELECT * FROM users WHERE id = $1`, [id], (err, result) => {
+            `SELECT * FROM users WHERE user_id = $1`, [id], (err, result) => {
                 if (err) {
                     throw err
                 }
@@ -53,7 +53,7 @@ const resetPassword = async (req: Request, res: Response) => {
                     const secret = process.env.JWT_SECRET + user.password
                     const payload = jwt.verify(token, secret)
                     user.password = hashedPassword
-                    pool.query(`UPDATE users SET password = $1 WHERE id = $2`, [user.password, id], (err, result) => {
+                    pool.query(`UPDATE users SET user_password = $1 WHERE user_id = $2`, [user.password, id], (err, result) => {
                         if (err) {
                             throw err
                         }
