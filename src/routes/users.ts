@@ -9,6 +9,7 @@ import confirmLink from '../controllers/confirmLink';
 import resetPassword from '../controllers/reset-password';
 import uploadForm from '../controllers/uploadForm';
 import allFiles from '../controllers/allFiles';
+import searchFile from '../controllers/searchFile';
 import pool from '../dbConfig/db';
 
 
@@ -31,6 +32,7 @@ routes.get('/login', checkAuthenticated, (req: Request, res: Response) => {
 })
 // Login Handle
 routes.post('/login', (req: Request, res: Response, next: NextFunction) => {
+    console.log('session >>>>', req.session)
     passport.authenticate('local', {
         successRedirect: '/dashboard',
         failureRedirect: '/login',
@@ -73,6 +75,11 @@ routes.get('/uploadform', checkNotAuthenticated, (req, res) => {
 
 routes.post('/uploadform', checkNotAuthenticated, uploadForm)
 
+// search by file title
+routes.get('/searchfile', checkNotAuthenticated, (req, res) => {
+    res.render('searchfile')
+})
+routes.post('/searchfile', searchFile)
 
 
 export default routes
