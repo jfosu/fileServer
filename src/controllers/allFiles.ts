@@ -1,14 +1,14 @@
 import express, { Application, Request, Response, NextFunction} from 'express'
 import pool from '../dbConfig/db'
 
+
 const allFiles = async (req: Request, res: Response) => {
     if (req.user.user_role === 'admin') {
         console.log('>>>>>> user')
         console.log(req.user)
         try {
             let userfiles = await pool.query(
-                `SELECT title, description, image 
-                FROM files`,
+                `SELECT * FROM files`,
             )
             console.log(userfiles.rows)
             let files = userfiles.rows
@@ -21,10 +21,11 @@ const allFiles = async (req: Request, res: Response) => {
     } else {
         console.log('>>>>>> user')
         console.log(req.user)
+        console.log('session>>>', req.session)
+        /*countFiles(cart)*/
         try {
             let userfiles = await pool.query(
-                `SELECT title, description, image 
-                FROM files`
+                `SELECT * FROM files`
             )
             console.log(userfiles.rows)
             let files = userfiles.rows

@@ -26,17 +26,17 @@ const forgotPassword = (req: Request, res: Response, next: NextFunction) => {
 
                 console.log(result.rows)
                 let user = result.rows[0]
-                const secret = process.env.JWT_SECRET + user.password
+                const secret = process.env.JWT_SECRET + user.user_password
                 const payload = {
-                    email: user.email,
-                    id: user.id
+                    email: user.user_email,
+                    id: user.user_id
                 }
                 const token = jwt.sign(payload, secret, { expiresIn: '15m'})
-                const link = `http://localhost:${PORT}/reset-password/${user.id}/${token}`
+                const link = `http://localhost:${PORT}/reset-password/${user.user_id}/${token}`
                 console.log(link)
                 const mailOptions = {
                     from: process.env.ADMIN_MAIL,
-                    to: 'phamosfii@gmail.com',
+                    to: email,
                     subject: 'Password reset',
                     html: `
                         <h3>click on the link below to reset your password</h3>

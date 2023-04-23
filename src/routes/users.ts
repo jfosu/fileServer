@@ -10,6 +10,7 @@ import resetPassword from '../controllers/reset-password';
 import uploadForm from '../controllers/uploadForm';
 import allFiles from '../controllers/allFiles';
 import searchFile from '../controllers/searchFile';
+import mail_form_sent from '../controllers/mail_form_sent';
 import pool from '../dbConfig/db';
 
 
@@ -62,9 +63,14 @@ routes.get('/reset-password/:id/:token', confirmLink)
 
 routes.post('/reset-password/:id/:token', resetPassword)
 
-routes.get('/mailform', checkNotAuthenticated, (req, res) => {
-    res.render('mailForm')
+routes.post('/mail_form', checkNotAuthenticated, (req, res) => {
+    const { file_id, filename, description, myfile, downloads, mails_sent } = req.body
+    console.log(req.body)
+    res.render('mailForm', { file_id, filename, description, myfile, downloads, mails_sent })
 })
+
+routes.post('/mail_form_sent', mail_form_sent)
+
 routes.get('/uploadform', checkNotAuthenticated, (req, res) => {
     if (req.user.user_role === 'admin') {
         res.render('uploadForm')
@@ -80,6 +86,7 @@ routes.get('/searchfile', checkNotAuthenticated, (req, res) => {
     res.render('searchfile')
 })
 routes.post('/searchfile', searchFile)
+
 
 
 export default routes

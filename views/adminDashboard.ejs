@@ -43,9 +43,14 @@
                       <div class="card-body">
                         <h5 class="card-title"><%= file.title %></h5>
                         <p class="card-text"><%= file.description %></p>
-                        <div class="input-group ">
-                          <input type="text" class="form-control btn-success mr-1" value="Download">
-                          <input type="text" class="form-control btn-primary" value="Send">
+                        <div class="input-group">
+                          <button class="bg-success mr-1 text-light" style="outline: none;">Downloads
+                            <h3><%= file.downloads %></h3>
+                          </button>
+                          <button class="bg-primary text-light">Sent files
+                            <h3><%= file.mails_sent %></h3>
+                          </button>
+                          
                         </div>
                       </div>
                     </div>
