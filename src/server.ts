@@ -3,7 +3,7 @@ import hRoutes from './routes/index';
 import uRoutes from './routes/users';
 import expressLayout from 'express-ejs-layouts'
 import flash from 'connect-flash';
-import session from 'express-session';
+import session, { Session, SessionData } from 'express-session';
 import passport from 'passport';
 import path from 'path';
 
@@ -30,8 +30,8 @@ app.use(express.urlencoded({ extended: false }))
 app.use(
   session({
       secret: "secret",
-      resave: true,
-      saveUninitialized: true
+      resave: false,
+      saveUninitialized: false
 
   })
 )

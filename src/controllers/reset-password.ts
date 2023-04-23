@@ -46,14 +46,14 @@ const resetPassword = async (req: Request, res: Response) => {
                 }
                 console.log(result.rows)
                 let user = result.rows[0]
-                if (id !== user.id) {
+                if (id !== user.user_id) {
                     errors.push({ msg: 'Invalid id...'})
                     res.render('reset-password', { errors })
                 } else {
-                    const secret = process.env.JWT_SECRET + user.password
+                    const secret = process.env.JWT_SECRET + user.user_password
                     const payload = jwt.verify(token, secret)
-                    user.password = hashedPassword
-                    pool.query(`UPDATE users SET user_password = $1 WHERE user_id = $2`, [user.password, id], (err, result) => {
+                    user.user_password = hashedPassword
+                    pool.query(`UPDATE users SET user_password = $1 WHERE user_id = $2`, [user.user_password, id], (err, result) => {
                         if (err) {
                             throw err
                         }

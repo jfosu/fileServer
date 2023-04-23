@@ -27,8 +27,8 @@ CREATE TABLE files(
     file_id SERIAL,
     title VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL,
-    downloads INT,
-    mails_sent INT,
+    downloads INTEGER DEFAULT 0,
+    mails_sent INTEGER DEFAULT 0,
     image VARCHAR(255) NOT NULL, 
     PRIMARY KEY (file_id)
 );
