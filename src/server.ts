@@ -5,7 +5,8 @@ import expressLayout from 'express-ejs-layouts'
 import flash from 'connect-flash';
 import session, { Session, SessionData } from 'express-session';
 import passport from 'passport';
-import path from 'path';
+import dotenv from 'dotenv'
+dotenv.config()
 
 
 

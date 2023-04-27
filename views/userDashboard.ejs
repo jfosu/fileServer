@@ -50,7 +50,15 @@
                           <input type="hidden" name="downloads" value="0">
                           <input type="hidden" name="mails_sent" value="0">
                         </form>
-                        <input type="text" class="form-control btn-success" value="Download">
+                        <form action="/download_file" method="POST">
+                          <input type="submit" class="form-control btn-success" value="Download">
+                          <input type="hidden" name="file_id" value="<%= file.file_id %>">
+                          <input type="hidden" name="filename" value="<%= file.title %>">
+                          <input type="hidden" name="description" value="<%= file.description %>">
+                          <input type="hidden" name="myfile" value="<%= file.image %>">
+                          <input type="hidden" name="downloads" value="1">
+                          <input type="hidden" name="mails_sent" value="1">
+                        </form>
                       </div>
                     </div>
                 </div>
