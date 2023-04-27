@@ -3,11 +3,11 @@ import transporter from '../utils/sendMail'
 import pool from '../dbConfig/db'
 
 
-const isFileInCart = (cart: any, file_id: string) => {
-    for(let i: number =0; i<cart.length; i++) {
-        if(cart[i].file_id == file_id) {
-            cart[i].mails_sent = parseInt(cart[i].mails_sent)
-            cart[i].mails_sent += 1
+const isFileInCart = (mails_cart: any, file_id: string) => {
+    for(let i: number =0; i<mails_cart.length; i++) {
+        if(mails_cart[i].file_id == file_id) {
+            mails_cart[i].mails_sent = parseInt(mails_cart[i].mails_sent)
+            mails_cart[i].mails_sent += 1
             return true
         }
     }
@@ -35,19 +35,19 @@ const mail_form_sent = (req: Request, res: Response) => {
         myfile
     }
 
-    if(req.session.cart !== undefined) {
-        const cart = req.session.cart
+    if(req.session.mails_cart !== undefined) {
+        const mails_cart = req.session.mails_cart
 
-        if(!isFileInCart(cart, file_id)) {
-            cart.push(fileData)
+        if(!isFileInCart(mails_cart, file_id)) {
+            mails_cart.push(fileData)
             
         }
     }else {
-        req.session.cart = [fileData]
-        const cart = req.session.cart
+        req.session.mails_cart = [fileData]
+        const mails_cart = req.session.mails_cart
     }
-    console.log('huh!', req.session.cart)
-    let results = req.session.cart
+    console.log('huh!', req.session.mails_cart)
+    let results = req.session.mails_cart
     console.log('No. mail sent...', results)
     for(let i: number = 0; i<results.length; i++) {
         let id = results[i].file_id

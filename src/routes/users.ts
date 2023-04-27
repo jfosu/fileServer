@@ -11,6 +11,7 @@ import uploadForm from '../controllers/uploadForm';
 import allFiles from '../controllers/allFiles';
 import searchFile from '../controllers/searchFile';
 import mail_form_sent from '../controllers/mail_form_sent';
+import download_file from '../controllers/download_file';
 import pool from '../dbConfig/db';
 
 
@@ -70,6 +71,8 @@ routes.post('/mail_form', checkNotAuthenticated, (req, res) => {
 })
 
 routes.post('/mail_form_sent', mail_form_sent)
+
+routes.post('/download_file', download_file)
 
 routes.get('/uploadform', checkNotAuthenticated, (req, res) => {
     if (req.user.user_role === 'admin') {
