@@ -3,6 +3,27 @@ import pool from '../dbConfig/db'
 import jwt from 'jsonwebtoken'
 import transporter from '../utils/sendMail';
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     ForgotPasswordInput:
+ *       type: object
+ *       required:
+ *         - email
+ *       properties:
+ *         email:
+ *           type: string
+ *           default: john@gmail.com
+ *     ForgotPasswordResponse:
+ *       type: object
+ *       properties:
+ *         mail message:
+ *           type: string
+ *         link:
+ *           type: string
+ */
+
 
 const PORT = process.env.PORT || 5000;
 
@@ -19,10 +40,11 @@ const forgotPassword = (req: Request, res: Response, next: NextFunction) => {
 
             else if (result.rows.length === 0) {
                 errors.push({ msg: 'User with this email does not exist'})
-                console.log('User with this email does not exist')
-                res.render('forgot-password', { errors })
+                //console.log('User with this email does not exist')
+                //res.render('forgot-password', { errors })
+                res.status(400).json({errors})
             } else {
-                // User exist and now create a One time link valid for 15minutes
+                // User exist and now create a one time link valid for 15minutes
 
                 console.log(result.rows)
                 let user = result.rows[0]
@@ -52,7 +74,8 @@ const forgotPassword = (req: Request, res: Response, next: NextFunction) => {
                       // do something useful
                     }
                   });
-                res.send('Password reset link has been sent to your email ...')
+                // res.send('Password reset link has been sent to your email ...')
+                res.status(200).json({"mail message": "Password reset link has been sent to your email ...", link, token, id: user.user_id})
                 
                 
 

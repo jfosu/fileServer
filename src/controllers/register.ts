@@ -3,10 +3,44 @@ import pool from '../dbConfig/db'
 import bcrypt from 'bcrypt'
 const app: Application = express()
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     CreateUserInput:
+ *       type: object
+ *       required:
+ *         - name
+ *         - email
+ *         - password
+ *         - password2
+ *       properties:
+ *         name:
+ *           type: string
+ *           default: john
+ *         email:
+ *           type: string
+ *           default: john@gmail.com
+ *         password:
+ *           type: string
+ *           default: john123
+ *         password2:
+ *           type: string
+ *           default: john123
+ *     CreateUserResponse:
+ *       type: object
+ *       properties:
+ *         user_name:
+ *           type: string
+ *         user_email:
+ *           type: string
+ *         user_id:
+ *           type: string
+ */
+
 
 
 const register = async (req: Request, res: Response) => {
-    let role: string = 'auser'
     let { name, email, password, password2 } = req.body
     console.log({
         name,
@@ -30,10 +64,10 @@ const register = async (req: Request, res: Response) => {
     }
 
     if (errors.length > 0) {
-        res.render('register', { errors })
-        /*return res.status(400).json({
+        // res.render('register', { errors })
+        res.status(400).json({
             errors: errors
-        })*/
+        })
     } else {
         // Form validation has passed
 
@@ -49,19 +83,23 @@ const register = async (req: Request, res: Response) => {
 
                 if (result.rows.length > 0) {
                     errors.push({ msg: 'Email already registered'})
-                    res.render('register', { errors })
+                    // res.render('register', { errors })
+                    res.status(409).json({
+                        errors: errors
+                    })
                 } else {
                     pool.query(
-                        `INSERT INTO users (user_name, user_email, user_password, user_role)
-                        VALUES ($1, $2, $3, $4)
-                        RETURNING user_id, user_password`, [name, email, hashedPassword, role],
+                        `INSERT INTO users (user_name, user_email, user_password)
+                        VALUES ($1, $2, $3)
+                        RETURNING user_name, user_email, user_id`, [name, email, hashedPassword],
                         (err, result) => {
                             if (err) {
                                 throw err
                             }
-                            console.log(result.rows)
-                            req.flash('success_msg', 'You are now registered, Please log in')
-                            res.redirect('/login')
+                            console.log(result.rows[0])
+                            // req.flash('success_msg', 'You are now registered, Please log in')
+                            // res.redirect('/login')
+                            res.status(200).json(result.rows[0])
                         }
                     )
                 }
