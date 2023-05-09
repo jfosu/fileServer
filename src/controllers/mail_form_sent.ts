@@ -2,6 +2,40 @@ import express, { Application, Request, Response, NextFunction} from 'express'
 import transporter from '../utils/sendMail'
 import pool from '../dbConfig/db'
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     FileEmailRequest:
+ *       type: object
+ *       required:
+ *         - to
+ *         - subject
+ *         - body
+ *         - filePath
+ *       properties:
+ *         to:
+ *           type: string
+ *           format: email
+ *           example: johndoe@example.com
+ *         subject:
+ *           type: string
+ *           example: logo as specified
+ *         body:
+ *           type: string
+ *           example: find attach file as requested
+ *         filePath:
+ *           type: string
+ *           format: file-path
+ *           example: /path/to/myfile.png
+ *     FileEmailResponse:
+ *       type: object
+ *       properties:
+ *         success_msg:
+ *           type: string
+ *           description: A success message indicating that the file was sent successfully.
+ */
+
 
 const isFileInCart = (mails_cart: any, file_id: string) => {
     for(let i: number =0; i<mails_cart.length; i++) {
@@ -82,8 +116,9 @@ const mail_form_sent = (req: Request, res: Response) => {
         }
       });
     
-    req.flash('success_msg', 'File has been sent to specified mail address')
-    res.redirect('/dashboard')
+    // req.flash('success_msg', 'File has been sent to specified mail address')
+    // res.redirect('/dashboard')
+    res.status(200).json({'success_msg': 'File has been sent to specified mail address'})
 }
 
 export default mail_form_sent

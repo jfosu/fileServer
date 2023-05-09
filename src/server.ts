@@ -1,16 +1,15 @@
-import express, { Application, Request, Response, NextFunction} from 'express'
+import express, { Request, Response, NextFunction} from 'express'
 import hRoutes from './routes/index';
 import uRoutes from './routes/users';
 import expressLayout from 'express-ejs-layouts'
 import flash from 'connect-flash';
 import session, { Session, SessionData } from 'express-session';
 import passport from 'passport';
-import dotenv from 'dotenv'
-dotenv.config()
+import swaggerDocs from './utils/swagger';
 
 
 
-const app: Application = express()
+const app = express()
 
 // Authorize Login
 import initialize from './middleware/authLogins';
@@ -65,4 +64,5 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
+    swaggerDocs(app, PORT)
 });

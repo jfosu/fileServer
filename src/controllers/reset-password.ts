@@ -4,6 +4,30 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 const app: Application = express()
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     ResetPasswordForm:
+ *       type: object
+ *       required:
+ *         - password
+ *         - password2
+ *       properties:
+ *         password:
+ *           type: string
+ *           default: john123
+ *         password2:
+ *           type: string
+ *           default: john123
+ *     ResetPasswordResponse:
+ *       type: object
+ *       properties:
+ *         success_msg:
+ *           type: string
+ */
+
+
 
 
 const resetPassword = async (req: Request, res: Response) => {
@@ -29,10 +53,10 @@ const resetPassword = async (req: Request, res: Response) => {
     }
 
     if (errors.length > 0) {
-        res.render('reset-password', { errors })
-        /*return res.status(400).json({
+        // res.render('reset-password', { errors })
+        res.status(400).json({
             errors: errors
-        })*/
+        })
     } else {
         // Form validation has passed
 
@@ -44,12 +68,15 @@ const resetPassword = async (req: Request, res: Response) => {
                 if (err) {
                     throw err
                 }
-                console.log(result.rows)
-                let user = result.rows[0]
-                if (id !== user.user_id) {
-                    errors.push({ msg: 'Invalid id...'})
-                    res.render('reset-password', { errors })
-                } else {
+                
+                if (result.rows.length < 0) {
+
+                    // errors.push({ msg: 'Invalid id...'})
+                    // res.render('reset-password', { errors })
+                    res.status(409).json({'msg': 'Invalid id'})
+                 
+                }else {
+                    const user = result.rows[0]
                     const secret = process.env.JWT_SECRET + user.user_password
                     const payload = jwt.verify(token, secret)
                     user.user_password = hashedPassword
@@ -58,8 +85,9 @@ const resetPassword = async (req: Request, res: Response) => {
                             throw err
                         }
                         console.log(result.rows)
-                        req.flash('success_msg', 'Password reset done successfully')
-                        res.redirect('/login')
+                        // req.flash('success_msg', 'Password reset done successfully')
+                        // res.redirect('/login')
+                        res.status(200).json({'success_msg': 'Password reset done successfully, you can now login to view your resource'})
                     })
                 }
             }
