@@ -1,6 +1,6 @@
 import express, { Application, Request, Response, NextFunction} from 'express'
 import pool from '../dbConfig/db'
-import bcrypt from 'bcrypt'
+import { hashPassword } from '../utils/hashPassword'
 import jwt from 'jsonwebtoken'
 const app: Application = express()
 
@@ -32,6 +32,7 @@ const app: Application = express()
 
 const resetPassword = async (req: Request, res: Response) => {
     const { id, token } = req.params
+
     const { password, password2 } = req.body
     console.log({
         password,
@@ -53,43 +54,35 @@ const resetPassword = async (req: Request, res: Response) => {
     }
 
     if (errors.length > 0) {
-        // res.render('reset-password', { errors })
-        res.status(400).json({
+        res.render('resetPassword', { errors })
+        /*res.status(400).json({
             errors: errors
-        })
+        })*/
     } else {
         // Form validation has passed
 
-        let hashedPassword = await bcrypt.hash(password, 10)
+        const hashedPassword = await hashPassword(password)
         console.log(hashedPassword)
 
         pool.query(
             `SELECT * FROM users WHERE user_id = $1`, [id], (err, result) => {
                 if (err) {
                     throw err
-                }
                 
-                if (result.rows.length < 0) {
-
-                    // errors.push({ msg: 'Invalid id...'})
-                    // res.render('reset-password', { errors })
-                    res.status(409).json({'msg': 'Invalid id'})
-                 
-                }else {
-                    const user = result.rows[0]
-                    const secret = process.env.JWT_SECRET + user.user_password
-                    const payload = jwt.verify(token, secret)
-                    user.user_password = hashedPassword
-                    pool.query(`UPDATE users SET user_password = $1 WHERE user_id = $2`, [user.user_password, id], (err, result) => {
-                        if (err) {
-                            throw err
-                        }
-                        console.log(result.rows)
-                        // req.flash('success_msg', 'Password reset done successfully')
-                        // res.redirect('/login')
-                        res.status(200).json({'success_msg': 'Password reset done successfully, you can now login to view your resource'})
-                    })
                 }
+                const user = result.rows[0]
+                const secret = process.env.JWT_SECRET + user.user_password
+                const payload = jwt.verify(token, secret)
+                user.user_password = hashedPassword
+                pool.query(`UPDATE users SET user_password = $1 WHERE user_id = $2`, [user.user_password, id], (err, result) => {
+                    if (err) {
+                        throw err
+                    }
+                    console.log(result.rows)
+                    req.flash('success_msg', 'Password reset done successfully')
+                    res.redirect('/login')
+                    // res.status(200).json({'success_msg': 'Password reset done successfully, you can now login to view your resource'})
+                })
             }
         )
     }

@@ -17,36 +17,28 @@ import jwt from 'jsonwebtoken'
  *           type: string
  */
 
-const confirmLink = (req: Request, res: Response, next: NextFunction) => {
+const confirmLink = async(req: Request, res: Response, next: NextFunction) => {
     const { id, token } = req.params
-    console.log(req.params)
-    // res.status(200).json(req.params)
+    console.log('isitworking>>>', req.params)
+    
 
-    // Check if this id exist in database
-    pool.query(
-        `SELECT * FROM users WHERE user_id = $1`, [id], (err, result) => {
-            if (err) {
-                throw err
-            }
-            let user = result.rows[0]
-            if (id !== user.user_id) {
-                console.log('Invalid id...')
-                res.status(400).json({"Error": "Invalid id..."})
-                return
-            }
-            // We have a valid id, and we have a valid user with this id
-            const secret = process.env.JWT_SECRET + user.user_password
-            try {
-               const payload = jwt.verify(token, secret)
-               // res.render('reset-password', { email: user.user_email})
-               res.status(200).json({"Link": "This link is valid", email: user.user_email}) 
-            } catch (error: any) {
-                console.log('hun!')
-                console.log(error.message)
-                res.status(409).json({error: error.message})
-            }
-    })
-
+    try {
+        const results = await pool.query(
+            `SELECT * FROM users WHERE user_id = $1`, [id]
+        )
+        const user = results.rows[0]   
+        const secret = process.env.JWT_SECRET + user.user_password
+        if (id !== user.user_id) {
+            console.log('Invalid id...')
+            return res.status(400).json({error_msg: "Invalid id..."})
+        }
+        const payload = jwt.verify(token, secret)
+        res.render('resetPassword')
+        // res.status(200).json({"Link": "This link is valid", email: user.user_email})
+        
+    } catch (error: any) {
+        // res.status(409).json({error_msg: 'Invalid token or id'})
+    }
 }
 
 export default confirmLink

@@ -11,7 +11,7 @@
                         <div class="card-body">
                           <h5 class="card-title"><%= filename %></h5>
                           <p class="card-text"><%= description %></p>
-                          <form action="/mail_form_sent" method="POST">
+                          <form action="/sending_mail" method="POST">
                             <div class="mb-3">
                               <input type="email" class="form-control" name="to" id="to" placeholder="To: name@example.com" required>
                               
@@ -30,8 +30,6 @@
                             <input type="hidden" name="filename" value="<%= filename %>">
                             <input type="hidden" name="description" value="<%= description %>">
                             <input type="hidden" name="myfile" value="<%= myfile %>">
-                            <input type="hidden" name="downloads" value="1">
-                            <input type="hidden" name="mails_sent" value="1">
                           </form>
                           <button class="form-control btn-primary mr-1"><a href="/dashboard" style="text-decoration: none;" class="text-light">Cancel</a></button>
                         </div>

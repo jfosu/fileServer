@@ -1,14 +1,13 @@
 import { Express, Request, Response } from "express";
 import swaggerJSDoc from "swagger-jsdoc";
 import SwaggerUi from "swagger-ui-express";
-import { version } from "../../package.json";
 
 const options: swaggerJSDoc.Options = {
     definition: {
         openapi: "3.0.0",
         info: {
             title: 'FileServer API Docs',
-            version,
+            version: "1.0.0",
         }
     },
     apis: ['./src/routes/*.ts', './src/controllers/*.ts']

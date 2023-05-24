@@ -10,7 +10,7 @@
 <section class="bg-light text-info p-5">
     <div class="container text-center">
         <h3 class="my-5">Search, download and send files via mail</h3>
-          <form class="d-flex" action="/searchfile" method="POST">
+          <form class="d-flex" action="/search_file" method="POST">
             <input type="text" class="form-control" placeholder="Enter file title" name="title">
             <button class="btn btn-info text-light btn-lg" type="sumbit"><i class="fa-solid fa-magnifying-glass"></i></button>
           </form>
@@ -41,14 +41,12 @@
                       <div class="card-body">
                         <h5 class="card-title"><%= file.title %></h5>
                         <p class="card-text"><%= file.description %></p>
-                        <form action="/mail_form" method="POST">
+                        <form action="/send_mail" method="POST">
                           <input type="submit" class="form-control btn-primary mr-1" value="Send">
                           <input type="hidden" name="file_id" value="<%= file.file_id %>">
                           <input type="hidden" name="filename" value="<%= file.title %>">
                           <input type="hidden" name="description" value="<%= file.description %>">
                           <input type="hidden" name="myfile" value="<%= file.image %>">
-                          <input type="hidden" name="downloads" value="0">
-                          <input type="hidden" name="mails_sent" value="0">
                         </form>
                         <form action="/download_file" method="POST">
                           <input type="submit" class="form-control btn-success" value="Download">
@@ -56,8 +54,6 @@
                           <input type="hidden" name="filename" value="<%= file.title %>">
                           <input type="hidden" name="description" value="<%= file.description %>">
                           <input type="hidden" name="myfile" value="<%= file.image %>">
-                          <input type="hidden" name="downloads" value="1">
-                          <input type="hidden" name="mails_sent" value="1">
                         </form>
                       </div>
                     </div>
@@ -66,7 +62,7 @@
           </div>
           <% } %>
           <% } else { %>
-          <div>No Files Available</div>
+          <div>No Files Available Yet</div>
           <% } %>
         </div>
     </div>

@@ -7,49 +7,32 @@ const app: Application = express()
  * @openapi
  * components:
  *   schemas:
- *     CreateUserInput:
+ *     AdminRegistrationResponse:
  *       type: object
- *       required:
- *         - name
- *         - email
- *         - password
- *         - password2
  *       properties:
+ *         id:
+ *           type: integer
+ *           description: Admin ID
  *         name:
  *           type: string
- *           default: john
+ *           description: Name of the admin
  *         email:
  *           type: string
- *           default: john@gmail.com
- *         password:
- *           type: string
- *           default: john123
- *         password2:
- *           type: string
- *           default: john123
- *     CreateUserResponse:
- *       type: object
- *       properties:
- *         user_name:
- *           type: string
- *         user_email:
- *           type: string
- *         user_id:
- *           type: string
+ *           description: Email address of the admin
  */
 
-const register = async (req: Request, res: Response) => {
-    let { name, email, password, password2 } = req.body
+const registerAdmin = async (req: Request, res: Response) => {
+    let { name, email } = req.query
     console.log({
         name,
-        email,
-        password,
-        password2
+        email
     })
-
+    let password: string = 'admin123';
+    let confirmPassword: string = 'admin123';
+    let isAdmin: boolean = true
     let errors: any = []
 
-    if (!name || !email || !password || !password2) {
+    if (!name || !email) {
         errors.push({ msg: 'Please enter all fields'})
         // res.status(400)
         /* res.json({
@@ -57,15 +40,7 @@ const register = async (req: Request, res: Response) => {
           });*/
     }
 
-    if (password.length < 6) {
-        errors.push({ msg: 'Password should be at least 6 characters'})
-        // res.status(400)
-        /* res.json({
-            errors: [{ msg: 'Password should be at least 6 characters' }],
-          });*/
-    }
-
-    if (password !== password2) {
+    if (password !== confirmPassword) {
         errors.push({msg: 'Passwords do not match'})
         /* return res.status(400).json({
             errors: [{ msg: 'Passwords do not match' }],
@@ -74,7 +49,7 @@ const register = async (req: Request, res: Response) => {
     
     }
     if (errors.length > 0) {
-        res.render('register', {errors})
+        res.render('login', {errors})
         /*res.status(400)
         res.json({
             errors: errors
@@ -94,22 +69,22 @@ const register = async (req: Request, res: Response) => {
 
                 if (result.rows.length > 0) {
                     errors.push({ msg: 'Email already registered'})
-                    res.render('register', { errors })
+                    res.render('login', { errors })
                     /*res.status(409)
                     res.json({
                         errors: [{msg: 'Email already registered'}],
                     })*/
                 } else {
                     pool.query(
-                        `INSERT INTO users (user_name, user_email, user_password)
-                        VALUES ($1, $2, $3)
-                        RETURNING user_name, user_email, user_id`, [name, email, hashedPassword],
+                        `INSERT INTO users (user_name, user_email, user_password, is_admin)
+                        VALUES ($1, $2, $3, $4)
+                        RETURNING user_name, user_email, user_id`, [name, email, hashedPassword, isAdmin],
                         (err, result) => {
                             if (err) {
                                 throw err
                             }
                             console.log(result.rows[0])
-                            const newUser = result.rows[0]
+                            const adminUser = result.rows[0]
                             req.flash('success_msg', 'You are now registered, Please log in')
                             res.redirect('/login')
                             /*res.status(200)
@@ -127,4 +102,4 @@ const register = async (req: Request, res: Response) => {
 }
 
 
-export default register
+export default registerAdmin
