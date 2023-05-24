@@ -11,7 +11,7 @@
     <div class="container">
         <div class="text-center">
           <h3 class="mb-3 mb-md-0">Click to upload files</h3>
-              <form class="" action="/uploadform" method="GET">
+              <form class="" action="/upload_file" method="GET">
                 <input type="submit" class="form-control btn-info mr-1" value="Upload">
               </form>
         </div>
@@ -32,23 +32,23 @@
 <section class="p-5">
     <div class="container">
         <div class="row text-center">
-          <% if (files.length) { %> <% for(let file of files) { %>  
+          <% if (fileInfos.length) { %> <% for(let fileInfo of fileInfos) { %>  
           <div class="col-sm-6 col-md-4">
             <div class="card mb-3 bg-info text-light" style="max-width: 540px;">
                 <div class="row g-0">
                   <div class="col-md-4">
-                      <img src="uploads/<%= file.image %>" class="img-fluid rounded-start" alt="...">
+                      <img src="uploads/<%= fileInfo.image %>" class="img-fluid rounded-start" alt="...">
                   </div>
                     <div class="col-md-8">
                       <div class="card-body">
-                        <h5 class="card-title"><%= file.title %></h5>
-                        <p class="card-text"><%= file.description %></p>
+                        <h5 class="card-title"><%= fileInfo.title %></h5>
+                        <p class="card-text"><%= fileInfo.description %></p>
                         <div class="input-group">
                           <button class="bg-success mr-1 text-light" style="outline: none;">Downloads
-                            <h3><%= file.downloads %></h3>
+                            <h3><%= fileInfo.number_of_downloaded_files %></h3>
                           </button>
                           <button class="bg-primary text-light">Sent files
-                            <h3><%= file.mails_sent %></h3>
+                            <h3><%= fileInfo.number_of_sent_files %></h3>
                           </button>
                           
                         </div>
@@ -59,7 +59,7 @@
           </div>
           <% } %>
           <% } else { %>
-          <div>No Files Available</div>
+          <div>No Files Available Yet</div>
           <% } %>
         </div>
     </div>

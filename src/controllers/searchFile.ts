@@ -1,5 +1,6 @@
 import express, { Application, Request, Response, NextFunction} from 'express'
 import pool from '../dbConfig/db'
+import userInfo from '../types/userInfo'
 
 /**
  * @openapi
@@ -29,10 +30,12 @@ import pool from '../dbConfig/db'
  */
 
 const searchFile = async (req: Request, res: Response) => {
+    const user = req.user as userInfo
     const { title } = req.body
     if (!title) {
-        // res.redirect('/dashboard')
-        res.status(400).json({"Invalid Input": "Enter file title the next time"})
+        res.redirect('/dashboard')
+        // res.status(400)
+        // res.json({error_msg: "Enter file title the next time"})
     }
     try {
         const results = await pool.query(
@@ -40,8 +43,15 @@ const searchFile = async (req: Request, res: Response) => {
         )
         let searchfiles = results.rows
         console.log(searchfiles)
-        // res.render('searchFile', { searchfiles: searchfiles, name: req.user.user_name })
-        res.status(200).json({"Login User:": req.user.user_name, searchfiles})
+        if (searchfiles.length === 0) {
+            console.log('No file with such title')
+            req.flash('success_msg', 'No file with such title!')
+            res.redirect('/dashboard')
+            // res.status(404).json({error_msg: "file does not exist"})
+        }
+        res.render('searchFile', { searchfiles: searchfiles, name: user.user_name })
+        /*res.status(200)
+        res.json({searchfiles})*/
         
     } catch (err: any) {
         console.error(err.message)

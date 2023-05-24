@@ -1,16 +1,18 @@
 import express, { Application, Request, Response, NextFunction} from 'express'
 import { Router } from 'express'
 import passport from 'passport';
-import { checkAuthenticated, checkNotAuthenticated, } from '../middleware/authAccess'
+import { checkAuthenticated, checkNotAuthenticated, verifyAdmin } from '../middleware/authAccess'
 import register from '../controllers/register';
-import forgotPassword from '../controllers/forgot-password';
+import forgotPassword from '../controllers/forgotPassword';
 import confirmLink from '../controllers/confirmLink';
-import resetPassword from '../controllers/reset-password';
-import uploadForm from '../controllers/uploadForm';
+import resetPassword from '../controllers/resetPassword';
+import uploadForm from '../controllers/uploadFile';
+import uploadFile, { upload } from '../controllers/uploadFile';
 import allFiles from '../controllers/allFiles';
 import searchFile from '../controllers/searchFile';
-import mail_form_sent from '../controllers/mail_form_sent';
-import download_file from '../controllers/download_file';
+import sendingMail from '../controllers/sendingMail';
+import downloadFile from '../controllers/downloadFile';
+import registerAdmin from '../controllers/registerAdmin';
 
 
 const app: Application = express()
@@ -28,7 +30,7 @@ routes.get('/register', checkAuthenticated, (req: Request, res: Response) => {
  * /register:
  *   post:
  *     tags:
- *       - Register
+ *       - User
  *     summary: Register a User
  *     requestBody:
  *       required: true
@@ -51,6 +53,39 @@ routes.get('/register', checkAuthenticated, (req: Request, res: Response) => {
 
 
 routes.post('/register', register)
+/**
+ * @openapi
+ * /register_admin:
+ *   get:
+ *     tags:
+ *       - Admin
+ *     summary: Register an admin
+ *     parameters:
+ *       - name: name
+ *         in: query
+ *         description: Name of the admin
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - name: email
+ *         in: query
+ *         description: Email address of the admin
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: email
+ *     responses:
+ *       200:
+ *         description: Admin registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AdminRegistrationResponse'
+ *       400:
+ *         description: Bad request
+ */
+
+routes.get('/register_admin', registerAdmin)
 
 // Login Page
 routes.get('/login', checkAuthenticated, (req: Request, res: Response) => {
@@ -104,12 +139,12 @@ routes.get('/logout', (req, res) => {
     res.redirect('/login')
 })
 
-routes.get('/forgot-password', (req, res, next) => {
-    res.render('forgot-password')
+routes.get('/forgot_password', (req, res, next) => {
+    res.render('forgotPassword')
 })
 /**
  * @openapi
- * /forgot-password:
+ * /forgot_password:
  *   post:
  *     tags:
  *       - Forgot Password
@@ -133,10 +168,10 @@ routes.get('/forgot-password', (req, res, next) => {
  *         description: Bad request
  */  
 
-routes.post('/forgot-password', forgotPassword)
+routes.post('/forgot_password', forgotPassword)
 /**
  * @openapi
- * /reset-password/{id}/{token}:
+ * /reset_password/{id}/{token}:
  *   get:
  *     tags:
  *       - Validate link
@@ -165,10 +200,10 @@ routes.post('/forgot-password', forgotPassword)
 
     
 
-routes.get('/reset-password/:id/:token', confirmLink)
+routes.get('/reset_password/:id/:token', confirmLink)
 /**
  * @openapi
- * /reset-password/{id}/{token}:
+ * /reset_password/{id}/{token}:
  *   post:
  *     tags:
  *       - Reset Password
@@ -202,28 +237,24 @@ routes.get('/reset-password/:id/:token', confirmLink)
  */
 
 
-routes.post('/reset-password/:id/:token', resetPassword)
+routes.post('/reset_password/:id/:token', resetPassword)
 
-routes.post('/mail_form', checkNotAuthenticated, (req, res) => {
-    const { file_id, filename, description, myfile, downloads, mails_sent } = req.body
+routes.post('/send_mail', checkNotAuthenticated, (req, res) => {
+    const { file_id, filename, description, myfile } = req.body
     console.log(req.body)
-    res.render('mailForm', { file_id, filename, description, myfile, downloads, mails_sent })
+    res.render('sendingMail', { file_id, filename, description, myfile })
 })
 
-routes.post('/mail_form_sent', mail_form_sent)
+routes.post('/sending_mail', sendingMail)
 
-routes.post('/download_file', download_file)
+routes.post('/download_file', downloadFile)
 
-routes.get('/uploadform', checkNotAuthenticated, (req, res) => {
-    if (req.user.is_admin === true) {
-        res.render('uploadForm')
-    }
-    res.redirect('/dashboard')
-    
+routes.get('/upload_file', checkNotAuthenticated, verifyAdmin, (req, res) => {
+    res.render('uploadFile')
 })
 /**
  * @openapi
- * /uploadform:
+ * /upload_file:
  *   post:
  *     tags:
  *       - File Upload
@@ -242,10 +273,6 @@ routes.get('/uploadform', checkNotAuthenticated, (req, res) => {
  *               myfile:
  *                 type: string
  *                 format: binary
- *             required:
- *               - filename
- *               - description
- *               - myfile
  *     responses:
  *       200:
  *         description: Success
@@ -261,15 +288,15 @@ routes.get('/uploadform', checkNotAuthenticated, (req, res) => {
 
 
 
-routes.post('/uploadform', checkNotAuthenticated, uploadForm)
+routes.post('/upload_file', checkNotAuthenticated, verifyAdmin, upload, uploadFile)
 
 // search by file title
-routes.get('/searchfile', checkNotAuthenticated, (req, res) => {
-    res.render('searchfile')
+routes.get('/search_file', checkNotAuthenticated, (req, res) => {
+    res.render('searchFile')
 })
 /**
  * @openapi
- * /searchfile:
+ * /search_file:
  *   post:
  *     tags:
  *       - Search Files
@@ -287,12 +314,12 @@ routes.get('/searchfile', checkNotAuthenticated, (req, res) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/SearchFilesResponse'
- *       409:
- *         description: Conflict
+ *       404:
+ *         description: Not found
  *       400:
  *         description: Bad request
  */
-routes.post('/searchfile', searchFile)
+routes.post('/search_file', checkNotAuthenticated, searchFile)
 
 
 

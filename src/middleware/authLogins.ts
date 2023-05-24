@@ -1,14 +1,13 @@
-// Check credentials and log in user
 const LocalStrategy = require("passport-local").Strategy
 import pool from "../dbConfig/db"
-import bcrypt from 'bcrypt'
+import { comparePassword } from "../utils/hashPassword"
 
 function initialize(passport: any) {
     const authenticateUser = async(email: string, password: string, done: any) => {
         pool.query(
             `SELECT * FROM users WHERE user_email = $1`,
             [email],
-            (err, results) => {
+            async (err, results) => {
                 if (err) {
                     throw err
                 }
@@ -17,19 +16,17 @@ function initialize(passport: any) {
                     const user = results.rows[0]
                     console.log(user)
 
-                    bcrypt.compare(password, user.user_password, (err, isMatch) => {
-                        if (err) {
-                            console.log('pas' + password, 'user.pas' + user.password)
-                            throw err
-                        }
-
+                    try {
+                        const isMatch = await comparePassword(password, user.user_password);
                         if (isMatch) {
                             return done(null, user)
                         } else {
-                            
                             return done(null, false, { message: "Password is not correct"})
                         }
-                    })
+                    } catch (error) {
+                        console.error(error);
+                        return done(null, false, { message: "An error occurred while checking the password" })
+                    }
                 } else {
                     return done(null, false, { message: "Email is not registered"})
                 }

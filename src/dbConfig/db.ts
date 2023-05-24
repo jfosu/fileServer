@@ -1,14 +1,16 @@
-import dotenv from 'dotenv'
-dotenv.config()
+import { Pool } from 'pg';
+import config from '../config/config';
 
-import { Pool } from "pg"
-
-const isProduction = process.env.NODE_ENV === "production"
-
-const connectionString = `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_DATABASE}`
+const environment = process.env.NODE_ENV || 'development';
+const dbConfig = config[environment].db;
 
 const pool = new Pool({
-    connectionString: isProduction ? process.env.DATABASE_URL : connectionString
-})
+  host: dbConfig.host,
+  port: dbConfig.port,
+  database: dbConfig.database,
+  user: dbConfig.username,
+  password: dbConfig.password,
+});
 
-export default pool
+export default pool;
+

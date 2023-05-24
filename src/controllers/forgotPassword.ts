@@ -1,7 +1,10 @@
 import express, { Application, Request, Response, NextFunction} from 'express'
 import pool from '../dbConfig/db'
 import jwt from 'jsonwebtoken'
-import transporter from '../utils/sendMail';
+import transporter from '../utils/mailer';
+import { PORT } from '../server';
+import dotenv from 'dotenv'
+dotenv.config()
 
 /**
  * @openapi
@@ -25,7 +28,6 @@ import transporter from '../utils/sendMail';
  */
 
 
-const PORT = process.env.PORT || 5000;
 
 const forgotPassword = (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body
@@ -40,9 +42,8 @@ const forgotPassword = (req: Request, res: Response, next: NextFunction) => {
 
             else if (result.rows.length === 0) {
                 errors.push({ msg: 'User with this email does not exist'})
-                //console.log('User with this email does not exist')
-                //res.render('forgot-password', { errors })
-                res.status(400).json({errors})
+                res.render('forgot-password', { errors })
+                // res.status(400).json({errors})
             } else {
                 // User exist and now create a one time link valid for 15minutes
 
@@ -54,7 +55,7 @@ const forgotPassword = (req: Request, res: Response, next: NextFunction) => {
                     id: user.user_id
                 }
                 const token = jwt.sign(payload, secret, { expiresIn: '15m'})
-                const link = `http://localhost:${PORT}/reset-password/${user.user_id}/${token}`
+                const link = `${process.env.BASE_URL}:${PORT}/reset_password/${user.user_id}/${token}`
                 console.log(link)
                 const mailOptions = {
                     from: process.env.ADMIN_MAIL,
@@ -75,7 +76,9 @@ const forgotPassword = (req: Request, res: Response, next: NextFunction) => {
                     }
                   });
                 // res.send('Password reset link has been sent to your email ...')
-                res.status(200).json({"mail message": "Password reset link has been sent to your email ...", link, token, id: user.user_id})
+                req.flash('success_msg', 'Password reset link has been sent to your email ...')
+                res.redirect('/login')
+                // res.status(200).json({"mail message": "Password reset link has been sent to your email ...", link, token, id: user.user_id})
                 
                 
 
