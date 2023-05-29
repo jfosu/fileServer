@@ -43,11 +43,11 @@ const config: Config = {
   },
   production: {
     db: {
-      host: process.env.DB_HOST_PROD!,
-      port: parseInt(process.env.DB_PORT_PROD!),
-      database: process.env.DB_NAME_PROD!,
-      username: process.env.DB_USER_PROD!,
-      password: process.env.DB_PASS_PROD!,
+      host: process.env.PGHOST!,
+      port: parseInt(process.env.PGPORT!),
+      database: process.env.PGDATABASE!,
+      username: process.env.PGUSER!,
+      password: process.env.PGPASSWORD!,
     },
   },
 };
