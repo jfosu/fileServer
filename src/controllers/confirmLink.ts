@@ -19,9 +19,6 @@ import jwt from 'jsonwebtoken'
 
 const confirmLink = async(req: Request, res: Response, next: NextFunction) => {
     const { id, token } = req.params
-    console.log('isitworking>>>', req.params)
-    
-
     try {
         const results = await pool.query(
             `SELECT * FROM users WHERE user_id = $1`, [id]
@@ -30,7 +27,7 @@ const confirmLink = async(req: Request, res: Response, next: NextFunction) => {
         const secret = process.env.JWT_SECRET + user.user_password
         if (id !== user.user_id) {
             console.log('Invalid id...')
-            return res.status(400).json({error_msg: "Invalid id..."})
+            // return res.status(400).json({error_msg: "Invalid id..."})
         }
         const payload = jwt.verify(token, secret)
         res.render('resetPassword')

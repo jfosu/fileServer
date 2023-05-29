@@ -23,6 +23,15 @@ interface Config {
 }
 
 const config: Config = {
+  test: {
+    db: {
+      host: process.env.DB_HOST_TEST!,
+      port: parseInt(process.env.DB_PORT_TEST!),
+      database: process.env.DB_NAME_TEST!,
+      username: process.env.DB_USER_TEST!,
+      password: process.env.DB_PASS_TEST!,
+    },
+  },
   development: {
     db: {
       host: process.env.DB_HOST_DEV!,

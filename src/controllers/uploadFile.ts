@@ -57,13 +57,13 @@ const uploadFile = (req: Request, res: Response) => {
     const errors = []
     if (!filename || !description) {
         errors.push({msg: 'Provide file title & description'})
-        return res.render('uploadForm', {errors})
+        return res.render('uploadFile', {errors})
         // return res.status(400).json({error_msg: 'Provide file title & description'})
     }
     
     if (!req.file) {
         errors.push({msg: 'No file was selected'})
-        return res.render('uploadForm', {errors})
+        return res.render('uploadFile', {errors})
         // return res.status(404).json({error_msg: 'No file was selected'})
     }
   
@@ -84,7 +84,7 @@ const uploadFile = (req: Request, res: Response) => {
         )
     } else {
         errors.push({msg: 'Image files only'})
-        return res.render('uploadForm', {errors})
+        return res.render('uploadFile', {errors})
         // return res.status(400).json({error_msg: 'Only image files are allowed!'});
     }
 };
