@@ -3,39 +3,6 @@ import transporter from '../utils/mailer'
 import pool from '../dbConfig/db'
 import userInfo from '../types/userInfo'
 
-/**
- * @openapi
- * components:
- *   schemas:
- *     FileEmailRequest:
- *       type: object
- *       required:
- *         - to
- *         - subject
- *         - body
- *         - filePath
- *       properties:
- *         to:
- *           type: string
- *           format: email
- *           example: johndoe@example.com
- *         subject:
- *           type: string
- *           example: logo as specified
- *         body:
- *           type: string
- *           example: find attach file as requested
- *         filePath:
- *           type: string
- *           format: file-path
- *           example: /path/to/myfile.png
- *     FileEmailResponse:
- *       type: object
- *       properties:
- *         success_msg:
- *           type: string
- *           description: A success message indicating that the file was sent successfully.
- */
 
 
 const isFileInSession = (sent_files: any, id: string) => {
@@ -81,7 +48,6 @@ const sendingMail = (req: Request, res: Response) => {
         req.session.sent_files = [fileData]
         const sent_files = req.session.sent_files
     }
-    console.log('huh!', req.session.sent_files)
     let results = req.session.sent_files
     console.log('No. mail sent...', results)
     for(let i: number = 0; i<results.length; i++) {
@@ -118,6 +84,7 @@ const sendingMail = (req: Request, res: Response) => {
     transporter.sendMail(mailOptions, function(error, info){
         if (error) {
        console.log(error);
+       res.status(500).json({error_msg: 'Something went wrong, could send mail with attachment'})
         } else {
           console.log('Email sent: ' + info.response);
           

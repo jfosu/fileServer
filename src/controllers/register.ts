@@ -52,7 +52,7 @@ const register = async (req: Request, res: Response) => {
     if (!name || !email || !password || !password2) {
         errors.push({ msg: 'Please enter all fields'})
         // res.status(400)
-        /* res.json({
+        /*res.json({
             errors: [{ msg: 'Please enter all fields' }],
           });*/
     }
@@ -60,14 +60,14 @@ const register = async (req: Request, res: Response) => {
     if (password.length < 6) {
         errors.push({ msg: 'Password should be at least 6 characters'})
         // res.status(400)
-        /* res.json({
+        /*res.json({
             errors: [{ msg: 'Password should be at least 6 characters' }],
           });*/
     }
 
     if (password !== password2) {
         errors.push({msg: 'Passwords do not match'})
-        /* return res.status(400).json({
+        /*res.status(400).json({
             errors: [{ msg: 'Passwords do not match' }],
           });*/
 
@@ -75,28 +75,26 @@ const register = async (req: Request, res: Response) => {
     }
     if (errors.length > 0) {
         res.render('register', {errors})
-        /*res.status(400)
-        res.json({
+        // res.status(400)
+        /*res.json({
             errors: errors
           });*/
     } else {
         // Form validation has passed
 
         const hashedPassword = await hashPassword(password)
-        console.log('is it inserting >>>',hashedPassword )
 
         pool.query(
             `SELECT * FROM users WHERE user_email = $1`, [email], (err, result) => {
                 if (err) {
                     throw err
                 }
-                console.log(result.rows)
 
                 if (result.rows.length > 0) {
                     errors.push({ msg: 'Email already registered'})
                     res.render('register', { errors })
-                    /*res.status(409)
-                    res.json({
+                    // res.status(409)
+                    /*res.json({
                         errors: [{msg: 'Email already registered'}],
                     })*/
                 } else {
@@ -108,12 +106,11 @@ const register = async (req: Request, res: Response) => {
                             if (err) {
                                 throw err
                             }
-                            console.log(result.rows[0])
                             const newUser = result.rows[0]
-                            req.flash('success_msg', 'You are now registered, Please log in')
-                            res.redirect('/login')
-                            /*res.status(200)
-                            res.json({
+                            // req.flash('success_msg', 'You are now registered, Please log in')
+                            // res.redirect('/login')
+                            // res.status(200)
+                            /*res.json({
                                 user_name: newUser.user_name,
                                 user_email: newUser.user_email,
                                 user_id: newUser.user_id

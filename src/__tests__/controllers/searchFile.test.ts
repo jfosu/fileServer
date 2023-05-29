@@ -1,91 +1,69 @@
-// Import the necessary modules and functions
-import pool from '../../dbConfig/db'
-import searchFile from '../../controllers/searchFile'
+import { Request, Response } from 'express';
+import pool from '../../dbConfig/db';
+import searchFile from '../../controllers/searchFile';
 
-// Mock the pool.query function to return a sample result
-jest.mock('../../dbConfig/db', () => ({
-  query: jest.fn(() => ({
-    rows: [{
-      file_id: 1,
-      title: 'Sample File',
-      description: 'This is a sample file',
-      image: 'http://example.com/sample.jpg'
-    }]
-  }))
-}))
+jest.mock('../../dbConfig/db');
 
-// Define the test suite
-describe('searchFile', () => {
-  // Define the test case for the successful search
-  test('returns the correct search results', async () => {
-    // Mock the req and res objects
-    const req = { body: { title: 'Sample' } }
-    const res = {
+describe('searchFile function', () => {
+  let req: Request;
+  let res: Response;
+
+  beforeEach(() => {
+    req = {} as Request;
+    res = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn()
-    }
+      json: jest.fn(),
+    } as unknown as Response;
+  });
 
-    // Call the searchFile function with the mocked objects
-    // @ts-ignore
-    await searchFile(req, res)
+  it('should return an error if title is missing', async () => {
+    req.body = {};
 
-    // Verify that the pool.query function was called with the correct arguments
-    expect(pool.query).toHaveBeenCalledWith(
-      'SELECT file_id, title, description, image FROM files WHERE title ILIKE $1',
-      ['%Sample%']
-    )
+    await searchFile(req, res);
 
-    // Verify that the response contains the correct data
-    expect(res.status).toHaveBeenCalledWith(200)
-    expect(res.json).toHaveBeenCalledWith({
-      searchfiles: [{
-        file_id: 1,
-        title: 'Sample File',
-        description: 'This is a sample file',
-        image: 'http://example.com/sample.jpg'
-      }]
-    })
-  })
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ error_msg: 'Enter file title the next time' });
+  });
 
-  // Define the test case for the invalid input
-  test('returns an error for invalid input', async () => {
-    // Mock the req and res objects
-    const req = { body: {} }
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn()
-    }
+  it('should return an error if no files match the title', async () => {
+    req.body = { title: 'Non-existent file' };
 
-    // Call the searchFile function with the mocked objects
-    // @ts-ignore
-    await searchFile(req, res)
+    (pool.query as jest.Mock).mockResolvedValue({ rows: [] });
 
-    // Verify that the response contains the correct error message
-    expect(res.status).toHaveBeenCalledWith(400)
-    expect(res.json).toHaveBeenCalledWith({ 'Invalid Input': 'Enter file title the next time' })
-  })
+    await searchFile(req, res);
 
-  // Define the test case for the search result not found
-  test('returns an error when the file is not found', async () => {
-    // Mock the req and res objects
-    const req = { body: { title: 'Non-existing File' } }
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn()
-    }
+    expect(pool.query).toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({ error_msg: 'file does not exist' });
+  });
 
-    // Call the searchFile function with the mocked objects
-    // @ts-ignore
-    await searchFile(req, res)
+  it('should return the search results if files match the title', async () => {
+    req.body = { title: 'Wodin Fabrics' };
+    const mockRows = [
+      { file_id: 1, title: 'Wodin Fabrics', description: 'Description 1', image: 'image1.jpg' },
+      { file_id: 2, title: 'Wodin Fabrics', description: 'Description 2', image: 'image2.jpg' },
+    ];
+    const mockResults = { rows: mockRows };
 
-    // Verify that the pool.query function was called with the correct arguments
-    expect(pool.query).toHaveBeenCalledWith(
-      'SELECT file_id, title, description, image FROM files WHERE title ILIKE $1',
-      ['%Non-existing File%']
-    )
+    (pool.query as jest.Mock).mockResolvedValue(mockResults);
 
-    // Verify that the response contains the correct error message
-    expect(res.status).toHaveBeenCalledWith(404)
-    expect(res.json).toHaveBeenCalledWith({ error_msg: 'file does not exist' })
-  })
-})
+    await searchFile(req, res);
+
+    expect(pool.query).toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({ searchfiles: mockRows });
+  });
+
+  it('should handle database errors', async () => {
+    req.body = { title: 'Wodin Fabrics' };
+    const mockError = new Error('Database error');
+
+    (pool.query as jest.Mock).mockRejectedValue(mockError);
+    console.error = jest.fn();
+
+    await searchFile(req, res);
+
+    expect(pool.query).toHaveBeenCalled();
+    expect(console.error).toHaveBeenCalledWith(mockError.message);
+  });
+});

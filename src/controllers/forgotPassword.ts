@@ -2,7 +2,7 @@ import express, { Application, Request, Response, NextFunction} from 'express'
 import pool from '../dbConfig/db'
 import jwt from 'jsonwebtoken'
 import transporter from '../utils/mailer';
-import { PORT } from '../server';
+import { port } from '../server';
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -55,7 +55,12 @@ const forgotPassword = (req: Request, res: Response, next: NextFunction) => {
                     id: user.user_id
                 }
                 const token = jwt.sign(payload, secret, { expiresIn: '15m'})
-                const link = `${process.env.BASE_URL}:${PORT}/reset_password/${user.user_id}/${token}`
+
+                const environment = process.env.NODE_ENV || 'development';
+                const link = environment === 'production'
+                ? `https://${process.env.HOST}/reset_password/${user.user_id}/${token}`
+                : `${process.env.BASE_URL}:${port}/reset_password/${user.user_id}/${token}`;
+
                 console.log(link)
                 const mailOptions = {
                     from: process.env.ADMIN_MAIL,
@@ -75,7 +80,7 @@ const forgotPassword = (req: Request, res: Response, next: NextFunction) => {
                       // do something useful
                     }
                   });
-                // res.send('Password reset link has been sent to your email ...')
+                //res.send('Password reset link has been sent to your email ...')
                 req.flash('success_msg', 'Password reset link has been sent to your email ...')
                 res.redirect('/login')
                 // res.status(200).json({"mail message": "Password reset link has been sent to your email ...", link, token, id: user.user_id})

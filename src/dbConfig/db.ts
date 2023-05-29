@@ -2,7 +2,7 @@ import { Pool } from 'pg';
 import config from '../config/config';
 
 const environment = process.env.NODE_ENV || 'development';
-const dbConfig = config[environment].db;
+const dbConfig = environment === 'test' ? config.test.db : config[environment].db;
 
 const pool = new Pool({
   host: dbConfig.host,

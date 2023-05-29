@@ -60,9 +60,9 @@ app.use('/', uRoutes)
 
 
 
-export const PORT = process.env.PORT ? Number(process.env.PORT) : 3001;
+export const port = process.env.PORT ? Number(process.env.PORT) : 3001;
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
-    swaggerDocs(app, PORT)
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`)
+    swaggerDocs(app, port)
 });

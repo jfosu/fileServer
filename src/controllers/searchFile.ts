@@ -44,14 +44,14 @@ const searchFile = async (req: Request, res: Response) => {
         let searchfiles = results.rows
         console.log(searchfiles)
         if (searchfiles.length === 0) {
-            console.log('No file with such title')
+            
             req.flash('success_msg', 'No file with such title!')
             res.redirect('/dashboard')
             // res.status(404).json({error_msg: "file does not exist"})
         }
         res.render('searchFile', { searchfiles: searchfiles, name: user.user_name })
-        /*res.status(200)
-        res.json({searchfiles})*/
+        // res.status(200)
+        // res.json({searchfiles})
         
     } catch (err: any) {
         console.error(err.message)
