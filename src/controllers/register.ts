@@ -107,8 +107,8 @@ const register = async (req: Request, res: Response) => {
                                 throw err
                             }
                             const newUser = result.rows[0]
-                            // req.flash('success_msg', 'You are now registered, Please log in')
-                            // res.redirect('/login')
+                            req.flash('success_msg', 'You are now registered, Please log in')
+                            res.redirect('/login')
                             // res.status(200)
                             /*res.json({
                                 user_name: newUser.user_name,
