@@ -84,7 +84,7 @@ const registerAdmin = async (req: Request, res: Response) => {
                             console.log(result.rows[0])
                             const adminUser = result.rows[0]
                             req.flash('success_msg', 'You are now registered, Please log in')
-                            res.redirect('/login')
+                            res.redirect('login')
                             // res.status(200)
                             /*res.json({
                                 user_name: adminUser.user_name,
