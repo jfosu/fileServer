@@ -80,7 +80,7 @@ const resetPassword = async (req: Request, res: Response) => {
                     }
                     console.log(result.rows)
                     req.flash('success_msg', 'Password reset done successfully')
-                    res.redirect('/login')
+                    res.redirect('login')
                     // res.status(200).json({'success_msg': 'Password reset done successfully, you can now login to view your resource'})
                 })
             }

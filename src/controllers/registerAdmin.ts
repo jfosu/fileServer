@@ -49,7 +49,7 @@ const registerAdmin = async (req: Request, res: Response) => {
     
     }
     if (errors.length > 0) {
-        res.render('login', {errors})
+        res.render('register', {errors})
         // res.status(400)
         /*res.json({
             errors: errors
@@ -67,7 +67,7 @@ const registerAdmin = async (req: Request, res: Response) => {
 
                 if (result.rows.length > 0) {
                     errors.push({ msg: 'Email already registered'})
-                    res.render('login', { errors })
+                    res.render('register', { errors })
                     // res.status(409)
                     /*res.json({
                         errors: [{msg: 'Email already registered'}],
@@ -84,7 +84,7 @@ const registerAdmin = async (req: Request, res: Response) => {
                             console.log(result.rows[0])
                             const adminUser = result.rows[0]
                             req.flash('success_msg', 'You are now registered, Please log in')
-                            res.redirect('login')
+                            res.redirect('/login')
                             // res.status(200)
                             /*res.json({
                                 user_name: adminUser.user_name,
