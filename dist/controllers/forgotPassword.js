@@ -39,7 +39,7 @@ const forgotPassword = (req, res, next) => {
         }
         else if (result.rows.length === 0) {
             errors.push({ msg: 'User with this email does not exist' });
-            res.render('forgot-password', { errors });
+            res.render('forgotPassword', { errors });
             // res.status(400).json({errors})
         }
         else {
