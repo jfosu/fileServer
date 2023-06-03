@@ -84,7 +84,7 @@ const sendingMail = (req: Request, res: Response) => {
     transporter.sendMail(mailOptions, function(error, info){
         if (error) {
        console.log(error);
-       res.status(500).json({error_msg: 'Something went wrong, could send mail with attachment'})
+       // res.status(500).json({error_msg: 'Something went wrong, could send mail with attachment'})
         } else {
           console.log('Email sent: ' + info.response);
           

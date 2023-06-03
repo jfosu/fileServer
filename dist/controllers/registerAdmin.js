@@ -57,7 +57,7 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
           });*/
     }
     if (errors.length > 0) {
-        res.render('login', { errors });
+        res.render('register', { errors });
         // res.status(400)
         /*res.json({
             errors: errors
@@ -73,7 +73,7 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             console.log(result.rows);
             if (result.rows.length > 0) {
                 errors.push({ msg: 'Email already registered' });
-                res.render('login', { errors });
+                res.render('register', { errors });
                 // res.status(409)
                 /*res.json({
                     errors: [{msg: 'Email already registered'}],
