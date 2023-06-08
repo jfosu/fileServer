@@ -19,7 +19,7 @@ const downloadFile = (req, res) => {
     const { user_id, user_email } = user;
     let { file_id, filename, description, myfile } = req.body;
     const numberOfDownloadedFiles = 1;
-    const attachmentPath = path_1.default.join(__dirname, '../public/uploads', filename);
+    const attachmentPath = path_1.default.join(__dirname, '../public/uploads', myfile);
     console.log(attachmentPath, file_id, filename, description);
     const fileData = {
         user_id,
