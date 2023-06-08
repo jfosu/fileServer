@@ -1,6 +1,7 @@
 import express, { Application, Request, Response, NextFunction} from 'express'
 import pool from '../dbConfig/db'
 import userInfo from '../types/userInfo'
+import path from 'path'
 
 const isFileInSession = (downloaded_files: any, id: string) => {
     for(let i: number =0; i<downloaded_files.length; i++) {
@@ -20,8 +21,9 @@ const downloadFile = (req: Request, res: Response) => {
     let { file_id, filename, description, myfile } = req.body
     const numberOfDownloadedFiles = 1
 
-    const path = 'public\\uploads\\' + myfile
-    console.log(path, file_id, filename, description)
+    const attachmentPath = path.join(__dirname, '../public/uploads', filename);
+
+    console.log(attachmentPath, file_id, filename, description)
     
     const fileData = {
         user_id,
@@ -64,7 +66,7 @@ const downloadFile = (req: Request, res: Response) => {
         })
     }
 
-    res.download(path, (err) => {
+    res.download(attachmentPath, (err) => {
         if (err) {
             console.error(err)
         } else {

@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = __importDefault(require("../dbConfig/db"));
+const path_1 = __importDefault(require("path"));
 const isFileInSession = (downloaded_files, id) => {
     for (let i = 0; i < downloaded_files.length; i++) {
         if (downloaded_files[i].file_id == id) {
@@ -18,8 +19,8 @@ const downloadFile = (req, res) => {
     const { user_id, user_email } = user;
     let { file_id, filename, description, myfile } = req.body;
     const numberOfDownloadedFiles = 1;
-    const path = 'public\\uploads\\' + myfile;
-    console.log(path, file_id, filename, description);
+    const attachmentPath = path_1.default.join(__dirname, '../public/uploads', filename);
+    console.log(attachmentPath, file_id, filename, description);
     const fileData = {
         user_id,
         user_email,
@@ -58,7 +59,7 @@ const downloadFile = (req, res) => {
             console.log(result.rows);
         });
     }
-    res.download(path, (err) => {
+    res.download(attachmentPath, (err) => {
         if (err) {
             console.error(err);
         }

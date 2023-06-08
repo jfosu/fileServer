@@ -2,6 +2,7 @@ import express, { Application, Request, Response, NextFunction} from 'express'
 import transporter from '../utils/mailer'
 import pool from '../dbConfig/db'
 import userInfo from '../types/userInfo'
+import path from 'path'
 
 
 
@@ -23,11 +24,12 @@ const sendingMail = (req: Request, res: Response) => {
         res.redirect('/dashboard')
         // res.status(400).json({error_msg: 'Please provide mail address'})
     }
-    const path = 'public\\uploads\\' + myfile
+    const attachmentPath = path.join(__dirname, '../public/uploads', myfile);
+
     const nunmerOfSentFiles = 1
     const user = req.user as userInfo
     const { user_id, user_email } = user
-    console.log(to, subject, body, path, file_id, filename, description, myfile)
+    console.log(to, subject, body, attachmentPath, file_id, filename, description, myfile)
     
     const fileData = {
         user_id,
@@ -77,7 +79,7 @@ const sendingMail = (req: Request, res: Response) => {
         text: body,
         attachments: [
             {
-                path: path
+                path: attachmentPath
             }
         ]
     }
