@@ -24,7 +24,7 @@ const sendingMail = (req: Request, res: Response) => {
         res.redirect('/dashboard')
         // res.status(400).json({error_msg: 'Please provide mail address'})
     }
-    const attachmentPath = path.join(__dirname, '../public/uploads', myfile);
+    const attachmentPath = `https://${process.env.HOST}/uploads/${myfile}`;
 
     const nunmerOfSentFiles = 1
     const user = req.user as userInfo

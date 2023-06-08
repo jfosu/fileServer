@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mailer_1 = __importDefault(require("../utils/mailer"));
 const db_1 = __importDefault(require("../dbConfig/db"));
-const path_1 = __importDefault(require("path"));
 const isFileInSession = (sent_files, id) => {
     for (let i = 0; i < sent_files.length; i++) {
         if (sent_files[i].file_id == id) {
@@ -22,7 +21,7 @@ const sendingMail = (req, res) => {
         res.redirect('/dashboard');
         // res.status(400).json({error_msg: 'Please provide mail address'})
     }
-    const attachmentPath = path_1.default.join(__dirname, '../public/uploads', myfile);
+    const attachmentPath = `https://${process.env.HOST}/uploads/${myfile}`;
     const nunmerOfSentFiles = 1;
     const user = req.user;
     const { user_id, user_email } = user;
