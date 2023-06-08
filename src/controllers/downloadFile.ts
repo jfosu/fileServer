@@ -21,7 +21,7 @@ const downloadFile = (req: Request, res: Response) => {
     let { file_id, filename, description, myfile } = req.body
     const numberOfDownloadedFiles = 1
 
-    const attachmentPath = path.join(__dirname, '../public/uploads', filename);
+    const attachmentPath = path.join(__dirname, '../public/uploads', myfile);
 
     console.log(attachmentPath, file_id, filename, description)
     
