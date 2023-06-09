@@ -50,6 +50,7 @@ exports.upload = (0, multer_1.default)({
 }).single('myfile');
 const uploadFile = (req, res) => {
     const { filename, description } = req.body;
+    const host = 'https://fileserver-production-4659.up.railway.app/uploads/';
     const errors = [];
     if (!filename || !description) {
         errors.push({ msg: 'Provide file title & description' });
@@ -64,7 +65,7 @@ const uploadFile = (req, res) => {
     if (req.file.mimetype.startsWith('image/')) {
         db_1.default.query(`INSERT INTO files (title, description, image)
             VALUES ($1, $2, $3)
-            RETURNING *`, [filename, description, req.file.filename], (err, result) => {
+            RETURNING *`, [filename, description, `${host}${req.file.filename}`], (err, result) => {
             if (err) {
                 throw err;
             }
