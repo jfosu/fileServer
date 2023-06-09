@@ -21,9 +21,8 @@ const downloadFile = (req: Request, res: Response) => {
     let { file_id, filename, description, myfile } = req.body
     const numberOfDownloadedFiles = 1
 
-    const attachmentPath = `https://${process.env.HOST}/uploads/${myfile}`;
 
-    console.log(attachmentPath, file_id, filename, description)
+    console.log(myfile, file_id, filename, description)
     
     const fileData = {
         user_id,
@@ -66,7 +65,7 @@ const downloadFile = (req: Request, res: Response) => {
         })
     }
 
-    res.download(attachmentPath, (err) => {
+    res.download(myfile, (err) => {
         if (err) {
             console.error(err)
         } else {

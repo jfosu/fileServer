@@ -24,12 +24,11 @@ const sendingMail = (req: Request, res: Response) => {
         res.redirect('/dashboard')
         // res.status(400).json({error_msg: 'Please provide mail address'})
     }
-    const attachmentPath = `https://${process.env.HOST}/uploads/${myfile}`;
 
     const nunmerOfSentFiles = 1
     const user = req.user as userInfo
     const { user_id, user_email } = user
-    console.log(to, subject, body, attachmentPath, file_id, filename, description, myfile)
+    console.log(to, subject, body, myfile, file_id, filename, description, myfile)
     
     const fileData = {
         user_id,
@@ -79,7 +78,7 @@ const sendingMail = (req: Request, res: Response) => {
         text: body,
         attachments: [
             {
-                path: attachmentPath
+                path: myfile
             }
         ]
     }
