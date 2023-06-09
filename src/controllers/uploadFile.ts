@@ -53,8 +53,7 @@ export const upload = multer({
 
 const uploadFile = (req: Request, res: Response) => {
     const { filename, description } = req.body
-    const host = 'https://fileserver-production-cef4.up.railway.app/';
-
+    
     const errors = []
     if (!filename || !description) {
         errors.push({msg: 'Provide file title & description'})
@@ -73,7 +72,7 @@ const uploadFile = (req: Request, res: Response) => {
         pool.query(
             `INSERT INTO files (title, description, image)
             VALUES ($1, $2, $3)
-            RETURNING *`, [filename, description, `$`],
+            RETURNING *`, [filename, description, req.file.filename],
             (err, result) => {
                 if (err) {
                     throw err
