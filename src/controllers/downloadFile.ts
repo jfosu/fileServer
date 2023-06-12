@@ -67,7 +67,7 @@ const downloadFile = (req: Request, res: Response) => {
 
     res.download(myfile, (err) => {
         if (err) {
-            console.error(err)
+            console.error('file not found', err)
         } else {
             console.log('File downloaded successfully')
             
