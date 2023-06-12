@@ -23,7 +23,7 @@ exports.app.use(express_ejs_layouts_1.default);
 exports.app.set('view engine', 'ejs');
 // Bodyparser
 exports.app.use(express_1.default.json());
-exports.app.use(express_1.default.urlencoded({ extended: false }));
+exports.app.use(express_1.default.urlencoded({ extended: true }));
 // Express Session
 exports.app.use((0, express_session_1.default)({
     secret: "secret",
