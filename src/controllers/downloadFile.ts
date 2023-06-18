@@ -3,6 +3,11 @@ import pool from '../dbConfig/db'
 import userInfo from '../types/userInfo'
 import path from 'path'
 
+function extractFilenameFromPath(path: string): string {
+    const filename = path.substring(path.lastIndexOf('/') + 1);
+    return filename;
+}
+
 const isFileInSession = (downloaded_files: any, id: string) => {
     for(let i: number =0; i<downloaded_files.length; i++) {
         if(downloaded_files[i].file_id == id) {
@@ -21,8 +26,10 @@ const downloadFile = (req: Request, res: Response) => {
     let { file_id, filename, description, myfile } = req.body
     const numberOfDownloadedFiles = 1
 
+    const exfilename = extractFilenameFromPath(myfile);
+    const imagePath = `/app/public/uploads/${exfilename}`
 
-    console.log(myfile, file_id, filename, description)
+    console.log(myfile, file_id, filename, description, exfilename, imagePath)
     
     const fileData = {
         user_id,
@@ -45,7 +52,7 @@ const downloadFile = (req: Request, res: Response) => {
     }
     console.log('huh!', req.session.downloaded_files)
     let results = req.session.downloaded_files
-    console.log('No. mail sent...', results)
+    console.log('No. mail sent...', results, exfilename)
     for(let i: number = 0; i<results.length; i++) {
         pool.query(`INSERT INTO downloads (downloaded_files_id, user_id, user_email, file_id, image, number_of_downloaded_files)
         VALUES ($1, $2, $3, $4, $5, $6)
@@ -65,7 +72,7 @@ const downloadFile = (req: Request, res: Response) => {
         })
     }
 
-    res.download(myfile, (err) => {
+    res.download(imagePath, (err) => {
         if (err) {
             console.error('file not found', err)
         } else {
