@@ -24,7 +24,7 @@ other packages such as [bcrypt](https://www.npmjs.com/package/bcrypt), [body-par
 Typescript was essential during the development of the project which was employed in developing the backend.
 # PROJECT DEPLOYMENT
 ***
-The overall project is hosted [here](https://fileserver-production-1536.up.railway.app/)
+The overall project is hosted [here](https://fileserver-production-a192.up.railway.app/)
 # SCREENSHOTS
 ***
 ![File Server - Google Chrome 6_4_2023 3_37_42 PM](https://github.com/jfosu/fileServer/assets/114479445/d853f67a-aa20-42cf-9c96-1bcd6034f7af)
