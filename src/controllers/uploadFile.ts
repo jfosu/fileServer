@@ -53,7 +53,7 @@ export const upload = multer({
 
 const uploadFile = (req: Request, res: Response) => {
     const { filename, description } = req.body
-    const host = 'https://fileserver-production-1536.up.railway.app/uploads/';
+    const host = 'https://fileserver-production-a192.up.railway.app/uploads/';
 
     const errors = []
     if (!filename || !description) {
