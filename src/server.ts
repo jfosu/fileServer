@@ -51,6 +51,15 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next()
 })
 
+// Add a middleware to set the 'cache-control' header for authenticated routes
+app.use((req, res, next) => {
+  // For authenticated routes, set cache-control to 'no-store' to prevent caching
+  if (req.isAuthenticated()) {
+    res.setHeader('Cache-Control', 'no-store');
+  }
+  next();
+});
+
 // Routes
 app.use('/', hRoutes)
 app.use('/', uRoutes)
