@@ -42,6 +42,14 @@ exports.app.use((req, res, next) => {
     res.locals.error = req.flash('error');
     next();
 });
+// Add a middleware to set the 'cache-control' header for authenticated routes
+exports.app.use((req, res, next) => {
+    // For authenticated routes, set cache-control to 'no-store' to prevent caching
+    if (req.isAuthenticated()) {
+        res.setHeader('Cache-Control', 'no-store');
+    }
+    next();
+});
 // Routes
 exports.app.use('/', index_1.default);
 exports.app.use('/', users_1.default);
