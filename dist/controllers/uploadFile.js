@@ -50,7 +50,7 @@ exports.upload = (0, multer_1.default)({
 }).single('myfile');
 const uploadFile = (req, res) => {
     const { filename, description } = req.body;
-    const host = 'https://fileserver-production-a192.up.railway.app/uploads/';
+    const host = 'https://fileserver-production-74cf.up.railway.app/uploads/';
     const errors = [];
     if (!filename || !description) {
         errors.push({ msg: 'Provide file title & description' });
